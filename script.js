@@ -3,6 +3,31 @@ let grid = [];
 let startNode = null;
 let endNode = null;
 let searchArr = [];
+let isRunning = false;
+let stopRequested = false;
+
+function toggleUI(disabled) {
+    const elements = document.querySelectorAll(
+        "button, select, input[type='range'], input[type='number']"
+    );
+    elements.forEach(el => {
+        if (el.id === "speed") return;
+        el.disabled = disabled;
+    });
+}
+
+function toggleButton(section, isRunningNow) {
+    const button = document.querySelector(`#${section}Start`);
+    if (!button) return;
+
+    if (isRunningNow) {
+        button.textContent = "Stop";
+        button.classList.add("stop-btn");
+    } else {
+        button.textContent = "Start";
+        button.classList.remove("stop-btn");
+    }
+}
 
 function generateArray() {
     const size = document.getElementById("size").value;
@@ -31,13 +56,27 @@ async function markSorted() {
         await sleep(15);
     }
 }
-function sleep() {
-    const delay = document.getElementById("speed").value;
-    return new Promise(resolve => setTimeout(resolve, delay));
+async function sleep() {
+    const delay = parseInt(document.getElementById("speed").value);
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (stopRequested) reject(new Error("Algorithm stopped"));
+            else resolve();
+        }, delay);
+    });
 }
+
 async function startSort() {
+    if (isRunning) {
+        stopRequested = true;
+        return;
+    }
     delay = document.getElementById("speed").value;
     const algo = document.getElementById("algoselect").value;
+    isRunning = true;
+    stopRequested = false;
+    toggleUI(true);
+    toggleButton("sort", true);
     switch (algo) {
         case "bubble":
             await bubbleSort();
@@ -64,6 +103,10 @@ async function startSort() {
             break;
     }
     drawBars();
+    isRunning = false;
+    stopRequested = false;
+    toggleButton("sort", false);
+    toggleUI(false);
 }
 
 function generateGraph() {
@@ -145,6 +188,10 @@ function heuristic(a, b, type = "manhattan") {
 }
 
 async function startGraphTraversal() {
+    if (isRunning) {
+        stopRequested = true;
+        return;
+    }
     const algo = document.getElementById("graphAlgoSelect").value;
     const heuristicType = document.getElementById("heuristicSelect")?.value || "manhattan";
 
@@ -152,7 +199,10 @@ async function startGraphTraversal() {
         alert("Please select start and end nodes first!");
         return;
     }
-
+    isRunning = true;
+    stopRequested = false;
+    toggleUI(true);
+    toggleButton("graph", true);
     switch (algo) {
         case "bfs": await bfs(); break;
         case "dfs": await dfs(); break;
@@ -161,6 +211,10 @@ async function startGraphTraversal() {
         case "astar": await aStarSearch(heuristicType); break;
         default: break;
     }
+    isRunning = false;
+    stopRequested = false;
+    toggleButton("graph", false);
+    toggleUI(false);
 }
 
 function generateSearchArray() {
@@ -188,20 +242,40 @@ function generateSearchArray() {
 
 
 async function startSearch() {
+    if (isRunning) {
+        stopRequested = true;
+        return;
+    }
     const algo = document.getElementById("searchSelect").value;
     if (searchArr.length === 0) generateSearchArray();
-
+    isRunning = true;
+    stopRequested = false;
+    toggleUI(true);
+    toggleButton("search", true);
     switch (algo) {
         case "linear": await linearSearch(); break;
         case "binary": await binarySearch(); break;
         default: break;
     }
+    isRunning = false;
+    stopRequested = false;
+    toggleButton("search", false);
+    toggleUI(false);
 }
 
 window.onload = () => {
     generateArray();
     generateGraph();
     generateSearchArray();
+    document.getElementById("algoselect").addEventListener("change", () => {
+        if (!isRunning) generateArray();
+    });
+    document.getElementById("searchSelect").addEventListener("change", () => {
+        if (!isRunning) generateSearchArray();
+    });
+    document.getElementById("graphAlgoSelect").addEventListener("change", () => {
+        if (!isRunning) generateGraph();
+    });
     document.getElementById("searchSelect").addEventListener("change", () => {
         generateSearchArray();
     });

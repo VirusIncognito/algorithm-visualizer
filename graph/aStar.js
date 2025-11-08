@@ -43,7 +43,6 @@ async function aStarSearch(heuristicType = "manhattan") {
             await reconstructPath(parent, endRow, endCol, startRow, startCol);
             return;
         }
-
         for (const [dr, dc] of dirs) {
             const nr = r + dr, nc = c + dc;
             if (nr < 0 || nc < 0 || nr >= rows || nc >= cols) continue;
@@ -51,7 +50,7 @@ async function aStarSearch(heuristicType = "manhattan") {
             if (nCell.classList.contains("wall")) continue;
 
             const nKey = key(nr, nc);
-            const g = dist[curKey] + 1; 
+            const g = dist[curKey] + 1; // cost = 1 for each move
             const h = heuristic([nr, nc], [endRow, endCol], heuristicType);
             const f = g + h;
 
@@ -63,7 +62,7 @@ async function aStarSearch(heuristicType = "manhattan") {
         }
 
         if (cell !== startNode && cell !== endNode)
-            cell.style.backgroundColor = "lightgreen"; 
+            cell.style.backgroundColor = "lightgreen";  // visited
     }
 
     alert("No path found!");

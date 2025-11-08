@@ -13,7 +13,7 @@
         <h1>Data Structures and Algorithms Visualizer</h1>
     </header>
     <label>Delay</label>
-        <input type="range" id="speed" min="5" max="1000" value="200">
+        <input type="range" id="speed" min="10" max="500" value="200">
     <h2>Sorting Algorithms</h2>
     <div class="controls">
         <select id="algoselect">
@@ -27,7 +27,7 @@
         </select>
         <label>Size</label>
         <input type="range" id="size" min="10" max="200" value="25" oninput="generateArray()">
-        <button onclick="startSort()">Start</button>
+        <button id="sortStart" onclick="startSort()">Start</button>
     </div>
     <div id="bars"></div>
     <h2>Search Algorithms</h2>
@@ -39,12 +39,12 @@
         <input type="number" id="searchTarget" placeholder="Enter number to search">
         <label>Size</label>
         <input type="range" id="searchSize" min="5" max="30" value="10" oninput="generateSearchArray()">
-        <button onclick="startSearch()">Start</button>
+        <button id="searchStart" onclick="startSearch()">Start</button>
     </div>
     <div id="searchArray"></div>
     <h2>Graph Algorithms</h2>
     <label>Size</label>
-    <input type="range" id="graphSize" min="5" max="50" value="10" oninput="generateGraph()">
+    <input type="range" id="graphSize" min="5" max="60" value="10" oninput="generateGraph()">
     <div class="graph-controls">
         <select id="graphAlgoSelect">
             <option value="bfs">Breadth-First Search (BFS)</option>
@@ -58,7 +58,7 @@
             <option value="euclidean">Euclidean Distance</option>
             <option value="diagonal">Diagonal Distance</option>
         </select>
-        <button onclick="startGraphTraversal()">Start</button>
+        <button id="graphStart" onclick="startGraphTraversal()">Start</button>
     </div>
     <div id="graphCanvas" class="grid"></div>
     <script src="algorithms/bubbleSort.js"></script>
