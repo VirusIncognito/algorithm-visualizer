@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Structures and Algorithms Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Data Structures and Algorithms Visualizer</h1>
+    </header>
+    <label>Delay</label>
+        <input type="range" id="speed" min="5" max="1000" value="200">
+    <h2>Sorting Algorithms</h2>
+    <div class="controls">
+        <select id="algoselect">
+            <option value="bubble">Bubble Sort</option>
+            <option value="selection">Selection Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="merge">Merge Sort</option>
+            <option value="quick">Quick Sort</option>
+            <option value="heap">Heap Sort</option>
+            <option value="radix">Radix Sort</option>
+        </select>
+        <label>Size</label>
+        <input type="range" id="size" min="10" max="200" value="25" oninput="generateArray()">
+        <button onclick="startSort()">Start</button>
+    </div>
+    <div id="bars"></div>
+    <h2>Search Algorithms</h2>
+    <div class="search-controls">
+        <select id="searchSelect">
+            <option value="linear">Linear Search</option>
+            <option value="binary">Binary Search</option>
+        </select>
+        <input type="number" id="searchTarget" placeholder="Enter number to search">
+        <label>Size</label>
+        <input type="range" id="searchSize" min="5" max="30" value="10" oninput="generateSearchArray()">
+        <button onclick="startSearch()">Start</button>
+    </div>
+    <div id="searchArray"></div>
+    <h2>Graph Algorithms</h2>
+    <label>Size</label>
+    <input type="range" id="graphSize" min="5" max="50" value="10" oninput="generateGraph()">
+    <div class="graph-controls">
+        <select id="graphAlgoSelect">
+            <option value="bfs">Breadth-First Search (BFS)</option>
+            <option value="dfs">Depth-First Search (DFS)</option>
+            <option value="dijkstra">Dijkstra's Algorithm / Uniform Cost Search</option>
+            <option value="bestfirst">Best-First Search</option>
+            <option value="astar">A* Search</option>
+        </select>
+        <select id="heuristicSelect">
+            <option value="manhattan">Manhattan Distance</option>
+            <option value="euclidean">Euclidean Distance</option>
+            <option value="diagonal">Diagonal Distance</option>
+        </select>
+        <button onclick="startGraphTraversal()">Start</button>
+    </div>
+    <div id="graphCanvas" class="grid"></div>
+    <script src="algorithms/bubbleSort.js"></script>
+    <script src="algorithms/selectionSort.js"></script>
+    <script src="algorithms/insertionSort.js"></script>
+    <script src="algorithms/mergeSort.js"></script>
+    <script src="algorithms/quickSort.js"></script>
+    <script src="algorithms/heapSort.js"></script>
+    <script src="algorithms/radixSort.js"></script>
+    <script src="algorithms/linearSearch.js"></script>
+    <script src="algorithms/binarySearch.js"></script>
+    <script src="graph/MinHeap.js"></script>
+    <script src="graph/dfs.js"></script>
+    <script src="graph/bfs.js"></script>
+    <script src="graph/dijkstra.js"></script>
+    <script src="graph/bestFirst.js"></script>
+    <script src="graph/aStar.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
