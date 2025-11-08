@@ -12,8 +12,10 @@
     <header>
         <h1>Data Structures and Algorithms Visualizer</h1>
     </header>
-    <label>Delay</label>
+    <div id="floating-delay">
+        <label>Delay</label>
         <input type="range" id="speed" min="10" max="500" value="200">
+    </div>
     <h2>Sorting Algorithms</h2>
     <div class="controls">
         <select id="algoselect">
@@ -30,6 +32,7 @@
         <button id="sortStart" onclick="startSort()">Start</button>
     </div>
     <div id="bars"></div>
+    <hr class="divider">
     <h2>Search Algorithms</h2>
     <div class="search-controls">
         <select id="searchSelect">
@@ -42,6 +45,7 @@
         <button id="searchStart" onclick="startSearch()">Start</button>
     </div>
     <div id="searchArray"></div>
+    <hr class="divider">
     <h2>Graph Algorithms</h2>
     <label>Size</label>
     <input type="range" id="graphSize" min="5" max="60" value="10" oninput="generateGraph()">
