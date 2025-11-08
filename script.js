@@ -1,3 +1,12 @@
+window.addEventListener("unhandledrejection", (e) => {
+    if (e.reason === "Algorithm Stopped") {
+        console.log("Handled graceful stop.");
+        e.preventDefault();
+    } else {
+        console.error("Unhandled async error:", e.reason);
+    }
+});
+
 let arr = [];
 let grid = [];
 let startNode = null;
@@ -56,15 +65,21 @@ async function markSorted() {
         await sleep(15);
     }
 }
-async function sleep() {
+function sleep() {
     const delay = parseInt(document.getElementById("speed").value);
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (stopRequested) reject(new Error("Algorithm stopped"));
-            else resolve();
-        }, delay);
+        const step = 10;
+        let elapsed = 0;
+        function check() {
+            if (stopRequested) return reject("Algorithm stopped");
+            if (elapsed >= delay) return resolve();
+            elapsed += step;
+            setTimeout(check, step);
+        }
+        check();
     });
 }
+
 
 async function startSort() {
     if (isRunning) {
@@ -77,36 +92,43 @@ async function startSort() {
     stopRequested = false;
     toggleUI(true);
     toggleButton("sort", true);
-    switch (algo) {
-        case "bubble":
-            await bubbleSort();
-            break;
-        case "selection":
-            await selectionSort();
-            break;
-        case "insertion":
-            await insertionSort();
-            break;
-        case "merge":
-            await mergeSortWrapper();
-            break;
-        case "quick":
-            await quickSortWrapper();
-            break;
-        case "heap":
-            await heapSortWrapper();
-            break;
-        case "radix":
-            await radixSortWrapper();
-            break;
-        default:
-            break;
+    try {
+        switch (algo) {
+            case "bubble":
+                await bubbleSort();
+                break;
+            case "selection":
+                await selectionSort();
+                break;
+            case "insertion":
+                await insertionSort();
+                break;
+            case "merge":
+                await mergeSortWrapper();
+                break;
+            case "quick":
+                await quickSortWrapper();
+                break;
+            case "heap":
+                await heapSortWrapper();
+                break;
+            case "radix":
+                await radixSortWrapper();
+                break;
+            default:
+                break;
+        }
     }
-    drawBars();
-    isRunning = false;
-    stopRequested = false;
-    toggleButton("sort", false);
-    toggleUI(false);
+    catch (e) {
+        if (e === "Algorithm stopped") console.error(e);
+    }
+    finally {
+        drawBars();
+        isRunning = false;
+        stopRequested = false;
+        toggleButton("sort", false);
+        toggleUI(false);
+    }
 }
 
 function generateGraph() {
@@ -160,19 +182,24 @@ async function reconstructPath(parent, endRow, endCol, startRow, startCol) {
     const delay = parseInt(document.getElementById("speed").value);
     let key = `${endRow}-${endCol}`;
     const path = [];
+
     while (key in parent) {
+        if (stopRequested) return;
         const [r, c] = parent[key];
         path.push([r, c]);
         key = `${r}-${c}`;
     }
+
     for (let i = path.length - 1; i >= 0; i--) {
+        if (stopRequested) return;
         const [r, c] = path[i];
         const cell = grid[r][c];
         if (cell !== startNode && cell !== endNode)
             cell.style.backgroundColor = "red";
-        await new Promise(res => setTimeout(res, delay / 2));
+        await sleep();
     }
 }
+
 
 function heuristic(a, b, type = "manhattan") {
     const [x1, y1] = a, [x2, y2] = b;
@@ -203,18 +230,25 @@ async function startGraphTraversal() {
     stopRequested = false;
     toggleUI(true);
     toggleButton("graph", true);
-    switch (algo) {
-        case "bfs": await bfs(); break;
-        case "dfs": await dfs(); break;
-        case "dijkstra": await dijkstra(); break;
-        case "bestfirst": await bestFirstSearch(heuristicType); break;
-        case "astar": await aStarSearch(heuristicType); break;
-        default: break;
+    try {
+        switch (algo) {
+            case "bfs": await bfs(); break;
+            case "dfs": await dfs(); break;
+            case "dijkstra": await dijkstra(); break;
+            case "bestfirst": await bestFirstSearch(heuristicType); break;
+            case "astar": await aStarSearch(heuristicType); break;
+            default: break;
+        }
     }
-    isRunning = false;
-    stopRequested = false;
-    toggleButton("graph", false);
-    toggleUI(false);
+    catch (e) {
+        if (e === "Algorithm stopped") console.error(e);
+    }
+    finally {
+        isRunning = false;
+        stopRequested = false;
+        toggleButton("graph", false);
+        toggleUI(false);
+    }
 }
 
 function generateSearchArray() {
@@ -252,15 +286,22 @@ async function startSearch() {
     stopRequested = false;
     toggleUI(true);
     toggleButton("search", true);
-    switch (algo) {
-        case "linear": await linearSearch(); break;
-        case "binary": await binarySearch(); break;
-        default: break;
+    try {
+        switch (algo) {
+            case "linear": await linearSearch(); break;
+            case "binary": await binarySearch(); break;
+            default: break;
+        }
     }
-    isRunning = false;
-    stopRequested = false;
-    toggleButton("search", false);
-    toggleUI(false);
+    catch (e) {
+        if (e === "Algorithm stopped") console.error(e);
+    }
+    finally {
+        isRunning = false;
+        stopRequested = false;
+        toggleButton("search", false);
+        toggleUI(false);
+    }
 }
 
 window.onload = () => {

@@ -5,38 +5,55 @@ async function binarySearch() {
         return;
     }
 
-    const delay = parseInt(document.getElementById("speed").value);
     const cells = document.getElementsByClassName("search-cell");
-
     let left = 0;
     let right = searchArr.length - 1;
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
+    try {
+        while (left <= right) {
+            if (stopRequested) throw "Algorithm stopped";
 
-        for (let i = 0; i < searchArr.length; i++) {
-            if (i >= left && i <= right)
-                cells[i].style.background = "#87cefa";
-            else
-                cells[i].style.background = "#ddd";
+            const mid = Math.floor((left + right) / 2);
+
+            for (let i = 0; i < searchArr.length; i++) {
+                if (stopRequested) throw "Algorithm stopped";
+                if (i >= left && i <= right)
+                    cells[i].style.background = "#87cefa"; 
+                else
+                    cells[i].style.background = "#ddd"; 
+            }
+
+            // Mark midpoint
+            cells[mid].style.background = "yellow";
+            await sleep();
+            if (stopRequested) throw "Algorithm stopped";
+
+            if (searchArr[mid] === target) {
+                cells[mid].style.background = "limegreen";
+                await sleep();
+                alert(`Element ${target} found at index ${mid}`);
+                return;
+            } else if (searchArr[mid] < target) {
+                cells[mid].style.background = "#ff5050"; 
+                left = mid + 1;
+            } else {
+                cells[mid].style.background = "#ff5050"; 
+                right = mid - 1;
+            }
+
+            await sleep();
+            if (stopRequested) throw "Algorithm stopped";
         }
 
-        cells[mid].style.background = "yellow";
-        await sleep();
-
-        if (searchArr[mid] === target) {
-            cells[mid].style.background = "limegreen";
+        alert("Element not found");
+    } catch (e) {
+        if (e === "Algorithm stopped") {
+            for (let i = 0; i < cells.length; i++) {
+                cells[i].style.background = "#00eaff";
+            }
             return;
-        } else if (searchArr[mid] < target) {
-            cells[mid].style.background = "#ff5050";
-            left = mid + 1;
         } else {
-            cells[mid].style.background = "#ff5050";
-            right = mid - 1;
+            console.error(e);
         }
-
-        await sleep();
     }
-
-    alert("Element not found");
 }
